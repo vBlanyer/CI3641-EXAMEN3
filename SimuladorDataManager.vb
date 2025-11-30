@@ -1,13 +1,13 @@
 ' DataManager
 '
 ' Es un simulador que permite definir tipos de datos atomicos, y compuestos los cuales son struct y union,
-' y calcular sus tamaños y alineaciones bajo diferentes condiciones.
+' y calcular sus tamaÃ±os y alineaciones bajo diferentes condiciones.
 ' Se aplica poliformismo por medio de la clase base TipoBase para manejar
 ' los diferentes tipos de datos. Para poder representar los tipos compuestos
 ' struct y union se utilizan listas de tipos que componen dichos tipos que representan
 ' los campos, y se implementan metodos para calcular los tamanos en formato sin empaquetar, 
-' empaquetado y reordenado optimo. Para la union hay que tomar en cuenta que los campos comparten espacio, pero en pocas
-' palabras eso significa que se reserva es el espacio de el campo mas grande. Por tanto como no se comparten espacio 
+' empaquetado y reordenado optimo. Para la union hay que tomar en cuenta que los campos comparten espacio o mejor llamados alternativas, pero en pocas
+' palabras eso significa que se reserva es el espacio de la alternativa (campo) mas grande. Por tanto como no se comparten espacio 
 ' no hay padding. Para la alineacion se toma el maximo de los campos que componen el tipo compuesto, de esta forma
 ' se aplica el modulo para determinar el valor del padding a agregar.
 '
@@ -25,10 +25,10 @@ Public Class DataManager
 
     ' Clase base para utilizar polimorfismo para los tipos atomicos, struct y union
     ' Metodos
-    '   CalcularTamanoSinEmpaquetar: Devuelve el tamaño sin empaquetar
-    '   CalcularTamanoEmpaquetado: Devuelve el tamaño empaquetado
-    '   CalcularTamanoReordenado: Devuelve el tamaño reordenado óptimo
-    '   CalcularAlineacion: Devuelve la alineación del tipo
+    '   CalcularTamanoSinEmpaquetar: Devuelve el tamaÃ±o sin empaquetar
+    '   CalcularTamanoEmpaquetado: Devuelve el tamaÃ±o empaquetado
+    '   CalcularTamanoReordenado: Devuelve el tamaÃ±o reordenado Ã³ptimo
+    '   CalcularAlineacion: Devuelve la alineaciÃ³n del tipo
     Public MustInherit Class TipoBase
         Public Property Nombre As String
         Public MustOverride Function CalcularTamanoSinEmpaquetar() As Integer
@@ -40,13 +40,13 @@ Public Class DataManager
     ' Clase para tipo Atomico
     ' Argumentos:
     '   @nombre: nombre del tipo
-    '   @representacion: tamaño en bytes
-    '   @alineacion: alineación en bytes
+    '   @representacion: tamaÃ±o en bytes
+    '   @alineacion: alineaciÃ³n en bytes
     ' Metodos: 
-    '   CalcularTamanoSinEmpaquetar: Devuelve el tamaño sin empaquetar
-    '   CalcularTamanoEmpaquetado: Devuelve el tamaño empaquetado
-    '   CalcularTamanoReordenado: Devuelve el tamaño reordenado óptimo
-    '   CalcularAlineacion: Devuelve la alineación del tipo
+    '   CalcularTamanoSinEmpaquetar: Devuelve el tamaÃ±o sin empaquetar
+    '   CalcularTamanoEmpaquetado: Devuelve el tamaÃ±o empaquetado
+    '   CalcularTamanoReordenado: Devuelve el tamaÃ±o reordenado Ã³ptimo
+    '   CalcularAlineacion: Devuelve la alineaciÃ³n del tipo
     Public Class TipoAtomico
         ' Se heredan los metodos de la clase base
         Inherits TipoBase
@@ -85,10 +85,10 @@ Public Class DataManager
     '   @nombre: nombre del tipo
     '   @campos: lista de tipos que componen el struct
     ' Metodos:
-    '   CalcularTamanoSinEmpaquetar: Devuelve el tamaño sin empaquetar
-    '   CalcularTamanoEmpaquetado: Devuelve el tamaño empaquetado
-    '   CalcularTamanoReordenado: Devuelve el tamaño reordenado óptimo
-    '   CalcularAlineacion: Devuelve la alineación del tipo
+    '   CalcularTamanoSinEmpaquetar: Devuelve el tamaÃ±o sin empaquetar
+    '   CalcularTamanoEmpaquetado: Devuelve el tamaÃ±o empaquetado
+    '   CalcularTamanoReordenado: Devuelve el tamaÃ±o reordenado Ã³ptimo
+    '   CalcularAlineacion: Devuelve la alineaciÃ³n del tipo
     Public Class TipoStruct
         ' Se heredan los metodos de la clase base
         Inherits TipoBase
@@ -102,7 +102,7 @@ Public Class DataManager
 
         Public Overrides Function CalcularTamanoSinEmpaquetar() As Integer
             Dim total = 0
-            ' Simplemente sumo los tamaños sin empaquetar de cada campo ya que no hay alineación, es decir, no se reserva espacio extra "padding"
+            ' Simplemente sumo los tamaÃ±os sin empaquetar de cada campo ya que no hay alineaciÃ³n, es decir, no se reserva espacio extra "padding"
             For Each campo In Campos
                 total += campo.CalcularTamanoSinEmpaquetar()
             Next
@@ -111,7 +111,7 @@ Public Class DataManager
 
         Public Overrides Function CalcularTamanoEmpaquetado() As Integer
             Dim offset = 0 ' Desplazamiento actual
-            Dim maxAlineacion = 1 ' Máximo alineamiento encontrado
+            Dim maxAlineacion = 1 ' MÃ¡ximo alineamiento encontrado
             For Each campo In Campos
                 Dim alineacion = campo.CalcularAlineacion()
                 maxAlineacion = Math.Max(maxAlineacion, alineacion)
@@ -121,7 +121,7 @@ Public Class DataManager
                 End If
                 offset += campo.CalcularTamanoEmpaquetado()
             Next
-            ' Ajustar tamaño final al máximo alineamiento
+            ' Ajustar tamaÃ±o final al mÃ¡ximo alineamiento
             If offset Mod maxAlineacion <> 0 Then
                 offset += maxAlineacion - (offset Mod maxAlineacion)
             End If
@@ -129,7 +129,7 @@ Public Class DataManager
         End Function
 
         Public Overrides Function CalcularTamanoReordenado() As Integer
-            ' Ordenar campos por alineación descendente
+            ' Ordenar campos por alineaciÃ³n descendente
             Dim ordenados = Campos.OrderByDescending(Function(c) c.CalcularAlineacion()).ToList()
             Dim offset = 0
             Dim maxAlineacion = 1
@@ -167,7 +167,7 @@ Public Class DataManager
             Me.Alternativas = alternativas
         End Sub
 
-        ' Como se comparte el espacio entre los campos, el tamaño del union es el tamaño del campo más grande
+        ' Como se comparte el espacio entre los campos, el tamaÃ±o del union es el tamaÃ±o del campo mÃ¡s grande
         Public Overrides Function CalcularTamanoSinEmpaquetar() As Integer
             Return Alternativas.Max(Function(c) c.CalcularTamanoSinEmpaquetar())
         End Function
@@ -175,7 +175,7 @@ Public Class DataManager
         Public Overrides Function CalcularTamanoEmpaquetado() As Integer
             Return Alternativas.Max(Function(c) c.CalcularTamanoEmpaquetado())
         End Function
-        ' El reordenamiento no afecta a las uniones, ya que solo se utiliza el espacio del campo más grande
+        ' El reordenamiento no afecta a las uniones, ya que solo se utiliza el espacio del campo mÃ¡s grande
         Public Overrides Function CalcularTamanoReordenado() As Integer
             Return Alternativas.Max(Function(c) c.CalcularTamanoReordenado())
         End Function
@@ -184,17 +184,17 @@ Public Class DataManager
         End Function
     End Class
 
-    ' Definición de tipos
+    ' DefiniciÃ³n de tipos
     ' Procedimiento que define un tipo atomico
     ' Argumentos:
     '   @nombre: nombre del tipo
-    '   @representacion: tamaño en bytes
-    '   @alineacion: alineación en bytes
+    '   @representacion: tamaÃ±o en bytes
+    '   @alineacion: alineaciÃ³n en bytes
     Public Sub DefinirAtomico(nombre As String, representacion As Integer, alineacion As Integer)
         tipos(nombre) = New TipoAtomico(nombre, representacion, alineacion)
     End Sub
 
-    ' Definición de struct
+    ' DefiniciÃ³n de struct
     ' Procedimiento que define un tipo struct
     ' Argumentos:
     '   @nombre: nombre del tipo
@@ -210,7 +210,7 @@ Public Class DataManager
         tipos(nombre) = New TipoStruct(nombre, listaCampos)
     End Sub
 
-    ' Definición de union
+    ' DefiniciÃ³n de union
     ' Procedimiento que define un tipo union
     ' Argumentos:
     '   @nombre: nombre del tipo
@@ -227,12 +227,12 @@ Public Class DataManager
     End Sub
 
     ' Describir
-    ' Función que devuelve una lista de strings con la descripción del tipo
+    ' FunciÃ³n que devuelve una lista de strings con la descripciÃ³n del tipo
     ' Argumentos:
     '   @nombre: nombre del tipo a describir
     ' Devuelve:
-    '   Una lista de strings con la descripción del tipo donde se indica el tipo, y el peso en bytes 
-    '   de la alineacion, sin empaquetar, empaquetado y reordenado óptimo
+    '   Una lista de strings con la descripciÃ³n del tipo donde se indica el tipo, y el peso en bytes 
+    '   de la alineacion, sin empaquetar, empaquetado y reordenado Ã³ptimo
     Public Function Describir(nombre As String) As List(Of String)
         Dim resultado As New List(Of String)
         ' Necesitamos verificar que el tipo exista
@@ -241,24 +241,24 @@ Public Class DataManager
             Return resultado
         End If
 
-        ' Se llanan los metodos para obtener la información del tipo
+        ' Se llanan los metodos para obtener la informaciÃ³n del tipo
         Dim t = tipos(nombre)
         resultado.Add($"Tipo: {t.Nombre}")
-        resultado.Add($"Alineación: {t.CalcularAlineacion()} bytes")
+        resultado.Add($"AlineaciÃ³n: {t.CalcularAlineacion()} bytes")
         resultado.Add($"Sin empaquetar: {t.CalcularTamanoSinEmpaquetar()} bytes")
         resultado.Add($"Empaquetado: {t.CalcularTamanoEmpaquetado()} bytes")
-        resultado.Add($"Reordenado óptimo: {t.CalcularTamanoReordenado()} bytes")
+        resultado.Add($"Reordenado Ã³ptimo: {t.CalcularTamanoReordenado()} bytes")
         Return resultado
     End Function
 End Class
 
 ' SimuladorTipos
-' Módulo que implementa la interfaz de línea de comandos para interactuar con el DataManager
+' MÃ³dulo que implementa la interfaz de lÃ­nea de comandos para interactuar con el DataManager
 ' Permite definir tipos y describirlos mediante comandos
 Module SimuladorDataManager
     Dim manejador As New DataManager()
 
-    ' Interfaz de línea de comandos
+    ' Interfaz de lÃ­nea de comandos
     Sub Interfaz()
         While True
             Console.Write("> ")
@@ -271,21 +271,21 @@ Module SimuladorDataManager
                     If p.Length = 4 Then
                         manejador.DefinirAtomico(p(1), Integer.Parse(p(2)), Integer.Parse(p(3)))
                     Else
-                        Console.WriteLine("Comando ATOMICO inválido.")
+                        Console.WriteLine("Comando ATOMICO invÃ¡lido.")
                     End If
 
                 Case "STRUCT"
                     If p.Length >= 3 Then
                         manejador.DefinirStruct(p(1), p.Skip(2).ToList())
                     Else
-                        Console.WriteLine("Comando STRUCT inválido.")
+                        Console.WriteLine("Comando STRUCT invÃ¡lido.")
                     End If
 
                 Case "UNION"
                     If p.Length >= 3 Then
                         manejador.DefinirUnion(p(1), p.Skip(2).ToList())
                     Else
-                        Console.WriteLine("Comando UNION inválido.")
+                        Console.WriteLine("Comando UNION invÃ¡lido.")
                     End If
 
                 Case "DESCRIBIR"
@@ -295,7 +295,7 @@ Module SimuladorDataManager
                             Console.WriteLine(linea)
                         Next
                     Else
-                        Console.WriteLine("Comando DESCRIBIR inválido.")
+                        Console.WriteLine("Comando DESCRIBIR invÃ¡lido.")
                     End If
 
                 Case "SALIR"
@@ -317,4 +317,5 @@ Module SimuladorDataManager
         Console.WriteLine("  SALIR")
         Interfaz()
     End Sub
+
 End Module
