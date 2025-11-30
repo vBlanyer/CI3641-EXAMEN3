@@ -7,7 +7,7 @@
 ' struct y union se utilizan listas de tipos que componen dichos tipos que representan
 ' los campos, y se implementan metodos para calcular los tamanos en formato sin empaquetar, 
 ' empaquetado y reordenado optimo. Para la union hay que tomar en cuenta que los campos comparten espacio o mejor llamados alternativas, pero en pocas
-' palabras eso significa que se reserva es el espacio de la alternativa (campo) mas grande. Por tanto como no se comparten espacio 
+' palabras eso significa que se reserva es el espacio de la alternativa o campo mas grande. Por tanto como no se comparten espacio 
 ' no hay padding. Para la alineacion se toma el maximo de los campos que componen el tipo compuesto, de esta forma
 ' se aplica el modulo para determinar el valor del padding a agregar.
 '
@@ -319,3 +319,4 @@ Module SimuladorDataManager
     End Sub
 
 End Module
+
